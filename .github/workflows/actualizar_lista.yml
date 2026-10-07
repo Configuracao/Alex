@@ -1,0 +1,39 @@
+name: Actualizador Automático de Flow
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: '0 */6 * * *' # Opcional: cada 6 horas
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Descargar repositorio
+      uses: actions/checkout@v4
+
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Instalar dependencias
+      run: |
+        pip install requests
+
+    - name: Ejecutar script de automatización
+      env:
+        FLOW_USER: ${{ secrets.FLOW_USER }}
+        FLOW_PASS: ${{ secrets.FLOW_PASS }}
+        URL_FLOW: ${{ secrets.URL_FLOW }}
+      run: python actualizar.py
+
+    - name: Guardar cambios en el repositorio
+      shell: bash
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git diff --cached --quiet || git commit -m "auto: actualización automática de URLs de Flow"
+        git push
