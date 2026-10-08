@@ -22,7 +22,7 @@ if "/live/" not in url_nueva:
 base_nueva_limpia = url_nueva.split("/live/")[0]
 
 print(f"Nueva base de token detectada correctamente.")
-print(f"Escaneando archivos M3U/TXT en: {BASE_DIR}")
+print(f"Escaneando archivos M3U/TXT/Nico en: {BASE_DIR}")
 
 modificados = 0
 
@@ -31,7 +31,12 @@ for root, dirs, files in os.walk(BASE_DIR):
         continue
         
     for file in files:
-        if file.endswith((".m3u", ".m3u8", ".txt")):
+        # 1. Ignorar estrictamente tu archivo plantilla para que no sea modificado
+        if file == "base.m3u":
+            continue
+            
+        # 2. Actualizar el archivo "nico" (sin extensión) y cualquier otro .m3u o .txt
+        if file == "nico" or file.endswith((".m3u", ".m3u8", ".txt")):
             ruta_archivo = os.path.join(root, file)
             
             with open(ruta_archivo, "r", encoding="utf-8", errors="ignore") as f:
