@@ -1,0 +1,45 @@
+name: Procesar Agenda Deportiva
+
+on:
+  schedule:
+    # Se ejecuta automáticamente cada hora (puedes ajustar la frecuencia)
+    - cron: '0 * * * *'
+  workflow_dispatch: # Permite ejecutar el flujo manualmente desde la pestaña Actions
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Obtener el código fuente del repositorio
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      # 2. Configurar el entorno de Python
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # 3. Instalar las dependencias necesarias
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      # 4. Ejecutar el script
+      - name: Ejecutar script procesar_agenda.py
+        run: python procesar_agenda.py
+
+      # 5. Guardar y hacer commit de los cambios si agenda.json fue modificado
+      - name: Commit y Push de los cambios
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add agenda.json
+          if git diff --staged --quiet; then
+            echo "No hay cambios para guardar."
+          else
+            git commit -m "Actualización automática de agenda.json [skip ci]"
+            git push
+          fi
