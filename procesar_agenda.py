@@ -8,7 +8,7 @@ import time
 from datetime import datetime, timedelta
 
 # Configuración de URLs y archivos locales
-AGENDA_URL = "https://streamx305.sbs/json/agenda550.json"
+AGENDA_URL = "https://streamx723.sbs/json/agenda888.json?"
 LOCAL_CHANNELS_JSON = "04.json"
 OUTPUT_JSON = "agenda.json"
 EQUIPOS_DIR = os.path.join("assets", "equipos_fm")
